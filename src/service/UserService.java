@@ -20,7 +20,7 @@ public class UserService {
             String key;
             do {
                 key = randomHex(rand, 16);
-            } while (!usedKeys.contains(key));
+            } while (!usedKeys.add(key));
 
             long balance = rand.nextInt(100, 1000001);
             users.add(new User(i, "User" + i, key, balance));

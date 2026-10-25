@@ -19,10 +19,10 @@ public class User {
     public String getName() {
         return name;
     }
-    public String publicKey() {
+    public String getPublicKey() {
         return publicKey;
     }
-    public long balance() {
+    public long getBalance() {
         return balance;
     }
 
