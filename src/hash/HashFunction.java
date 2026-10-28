@@ -1,5 +1,7 @@
 package hash;
 
+import java.nio.charset.StandardCharsets;
+
 public class HashFunction {
     
      // initial state constants (8 words = 256 bits)
@@ -44,5 +46,9 @@ public class HashFunction {
         StringBuilder hex = new StringBuilder();
         for (int w : s) hex.append(String.format("%08x", w));
         return hex.toString();
+}
+
+public static String hash(String input) {
+    return hash(input.getBytes(StandardCharsets.UTF_8));
 }
 }
