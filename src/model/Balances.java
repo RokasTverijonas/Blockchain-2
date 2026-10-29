@@ -24,11 +24,28 @@ public class Balances {
         return copy;
     }
 
-    public long Total() {
+    public long total() {
         long sum = 0;
         for (long b : balances.values()) {
             sum += b;
         }
         return sum;
+    }
+
+    public boolean canApply(Transaction tx) {
+        if (!hasAccount(tx.getSender()) || !hasAccount(tx.getReceiver())) {
+            return false;
+        }
+        long senderBalance = balances.get(tx.getSender());
+        long receiverBalance = balances.get(tx.getReceiver());
+        if (tx.getAmount() <= 0 || senderBalance < tx.getAmount()) {
+            return false;
+        }
+        return true;
+    }
+
+    public void apply(Transaction tx) {
+        balances.put(tx.getSender(), balances.get(tx.getSender()) - tx.getAmount());
+        balances.put(tx.getReceiver(), balances.get(tx.getReceiver()) + tx.getAmount());
     }
 }
