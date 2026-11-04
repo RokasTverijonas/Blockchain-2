@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 public class Blockchain {
+    public static final int VERSION = 1;
+    public static final int MAX_TX = 100;
 
     private final List<Block> chain = new ArrayList<>();
     private final Set<String> confirmedIds = new HashSet<>();
@@ -16,7 +18,7 @@ public class Blockchain {
         this.balances = initial.copy();
         this.difficulty = difficulty;
 
-        chain.add(new Block("0".repeat(64), 0L, 1, 0, difficulty, List.of()));
+        chain.add(new Block("0".repeat(64), 0L, VERSION, 0, difficulty, List.of()));
     }
 
     public String addBlock(Block block) {
@@ -39,6 +41,13 @@ public class Blockchain {
         if (!block.getPrevHash().equals(lastHash)) {
             return "bad prev_hash";
         }
+        if (block.getVersion() != VERSION) {
+            return "unsupported version";
+        }
+
+        if (block.getTransactions().size() > MAX_TX) {
+            return "too many transactions";
+        }
 
         String expectedRoot = Block.computeTxRoot(block.getTransactions());
         if (!block.getTxRoot().equals(expectedRoot)) {
@@ -52,9 +61,16 @@ public class Blockchain {
         }
 
         Balances temp = balances.copy();
+        Set<String> seen = new HashSet<>();
         for (Transaction tx : block.getTransactions()) {
+            if (!tx.hasValidId()) {
+                return "bad transaction id";
+            }
             if (confirmedIds.contains(tx.getId())) {
                 return "duplicate transaction";
+            }
+            if (!seen.add(tx.getId())) {
+                return "duplicate in block";
             }
             if (!temp.canApply(tx)) {
                 return "transaction cannot be applied";

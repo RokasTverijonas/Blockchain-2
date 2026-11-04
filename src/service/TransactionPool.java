@@ -25,6 +25,8 @@ public class TransactionPool {
             reason = "non-positive amount";
         } else if (pending.containsKey(tx.getId()) || confirmedIds.contains(tx.getId())) {
             reason = "duplicate id";
+        } else if (!tx.hasValidId()){
+            reason = "invalid id";
         }
 
         if (reason != null) {

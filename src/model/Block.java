@@ -1,8 +1,10 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import hash.HashFunction;
+import service.MerkleTree;
 
 public class Block {
     private final String prevHash;
@@ -25,13 +27,13 @@ public class Block {
     }
 
     public static String computeTxRoot(List<Transaction> txs) {
-        StringBuilder sb = new StringBuilder();
+        List<String> ids = new ArrayList<>();
 
         for (Transaction tx : txs) {
-            sb.append(tx.getId());
+            ids.add(tx.getId());
         }
 
-        return HashFunction.hash(sb.toString());
+        return MerkleTree.calculateRoot(ids);
     }
 
     public String calculateHash() {

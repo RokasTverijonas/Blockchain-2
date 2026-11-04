@@ -41,7 +41,7 @@ public class Balances {
         if (tx.getAmount() <= 0 || senderBalance < tx.getAmount()) {
             return false;
         }
-        return true;
+        return receiverBalance <= Long.MAX_VALUE - tx.getAmount();
     }
 
     public void apply(Transaction tx) {

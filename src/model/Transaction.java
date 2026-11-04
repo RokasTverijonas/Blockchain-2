@@ -26,6 +26,10 @@ public class Transaction {
         return HashFunction.hash(serialize(sender, receiver, amount, sequence));
     }
 
+    public boolean hasValidId() {
+        return id.equals(computeId(sender, receiver, amount, sequence));
+    }
+
     public String getSender() {
         return sender;
     }
