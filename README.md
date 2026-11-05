@@ -1,4 +1,4 @@
-# Simplified Blockchain (v0.2)
+# Simplified Blockchain (v0.3)
  
 ## Run
  
@@ -58,7 +58,43 @@
     Time: 1323 ms
  
 Remaining 339 tx: senders lack balance.
+
+## v0.3: AI improvements
+ 
+Improved on branch `v0.3`. Two directions: Merkle tree efficiency and mining loop efficiency.
+ 
+### Changes
+ 
+| Change | File | Result |
+|---|---|---|
+| Merkle: node hex is decoded straight into one combined byte array (was: 3 arrays, `substring` + `parseInt` per byte) | `MerkleTree.java` | faster |
+| Mining: constant header parts built once, `calculateHash()` only appends the nonce | `Block.java` | no measurable gain |
+ 
+Rejected: replacing `String.format` in the hash hex output with a lookup table. It is the biggest cost, but it means changing the hash function, which I kept unchanged so that results are not mixed with a hash change.
+ 
+### How it was checked
+ 
+- Same 8 tests pass on v0.2 and v0.3.
+- `Benchmark` prints `root` and `hash` for fixed data (100 tx, nonce 12345). Both are identical before and after, so the output did not change:
+  - `root: 5a0e07f8bb036730c8f9e494cbf7e0818e8c07378fa8465a3751051c8c21f20e`
+  - `hash: d44764081db7504b5870bd321e2d11382236a9953eca7c0003b147dd1efa65aa`
+### Benchmark
+ 
+    javac -d bin -sourcepath src src/test/Benchmark.java
+    java -cp bin test.Benchmark
+ 
+Fixed input, 1 warm-up, 5 measured runs, results printed after the measurements. Merkle = the root of the same 100-leaf tree computed 2000 times. Mining = 200 000 fixed attempts of the inner loop (set nonce, hash, check prefix), not a full search.
+ 
+| | v0.2 (ms) | v0.3 (ms) |
+|---|---|---|
+| Merkle | 273 252 265 251 272, avg **262** | 233 226 223 228 228, avg **227** |
+| Mining | 235 202 202 202 201, avg **208** | 212 198 199 205 198, avg **202** |
+ 
+### Conclusion
+
+- **Merkle:** about 13% faster (262 to 227 ms); `root` unchanged.
+- **Mining:** no measurable improvement. 
  
 ## Use of AI
  
-Claude (Anthropic): structure, explanations.
+Claude (Anthropic) was used in v0.1, v0.2 and v0.3 for structure, code drafts and explanations. In v0.3 AI proposed the Merkle hex decoding and the mining header precompute, and assisted me with the benchmark. I accepted both changes after checking them (8 tests pass, identical `root` and `hash`, benchmark). However, I rejected the hash function change because I wanted to keep my hash unchanged, so results are not mixed with a hash change.
