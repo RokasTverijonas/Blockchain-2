@@ -21,19 +21,14 @@ public class MerkleTree {
             for (int i = 0; i < currentLevel.size(); i += 2) {
                 String left = currentLevel.get(i);
 
-                String right;
+                String right = (i + 1 < currentLevel.size()) ? currentLevel.get(i + 1) : left;
 
-                if (i + 1 < currentLevel.size()) {
-                    right = currentLevel.get(i + 1);
-                } else {
-                    right = left;
-                }
+                int leftLen = left.length() / 2;
+                byte[] combined = new byte[leftLen + right.length() / 2];
+                decodeInto(left, combined, 0);
+                decodeInto(right, combined, leftLen);
 
-                byte[] leftBytes = hexToBytes(left);
-                byte[] rightBytes = hexToBytes(right);
-                byte[] combinedBytes = combineBytes(leftBytes, rightBytes);
-
-                nextLevel.add(HashFunction.hash(combinedBytes));
+                nextLevel.add(HashFunction.hash(combined));
             }
 
             currentLevel = nextLevel;
@@ -41,23 +36,14 @@ public class MerkleTree {
         return currentLevel.get(0);
     }
 
-    private static byte[] hexToBytes(String hex) {
-        byte[] bytes = new byte[hex.length() / 2];
-        for (int i = 0; i < bytes.length; i++ ) {
-            
-            int index = i * 2;
-
-            bytes[i] = (byte) Integer.parseInt(hex.substring(index, index + 2), 16);
-        } 
-        return bytes;
+    private static void decodeInto(String hex, byte[] dest, int offset) {
+        for (int i = 0; i < hex.length() / 2; i++) {
+            dest[offset + i] = (byte) ((hexValue(hex.charAt(2 * i)) << 4)
+        | hexValue(hex.charAt(2 * i + 1)));
+        }
     }
 
-    private static byte[] combineBytes(byte[] left, byte[] right) {
-        byte[] combined = new byte[left.length + right.length];
-
-        System.arraycopy(left, 0, combined, 0, left.length);
-        System.arraycopy(right, 0, combined, left.length, right.length);
-
-        return combined;
+    private static int hexValue(char c) {
+        return c <= '9' ? c - '0' : c - 'a' + 10;
     }
 }
