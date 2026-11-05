@@ -44,32 +44,20 @@ public class Main {
         int included = 0;
 
         while (!pool.isEmpty()) {
-            List<Transaction> selected = CandidateBuilder.select(pool, chain.getBalances(), random);
-            if (selected.isEmpty()) {
+            Block block = MiningService.mineNext(chain, pool, random);
+            if (block == null) {
                 break;
             }
 
-            Block block = new Block(chain.last().calculateHash(), System.currentTimeMillis() / 1000, 1, 0, difficulty, selected);
-            MiningService.Result result = MiningService.mine(block);
-
-            String error = chain.addBlock(block);
-            if (error != null) {
-                System.out.println("Block rejected: " + error);
-                break;
-            }
-
-            pool.removeAll(selected);
-            included += selected.size();
+            included += block.getTransactions().size();
 
             System.out.println("Block " + (chain.size() - 1)
-                    + " | tx=" + selected.size()
+                    + " | tx=" + block.getTransactions().size()
                     + " | prev=" + block.getPrevHash()
                     + " | root=" + block.getTxRoot()
-                    + " | hash=" + result.hash()
+                    + " | hash=" + block.calculateHash()
                     + " | diff=" + difficulty
-                    + " | nonce=" + block.getNonce()
-                    + " | attempts=" + result.attempts()
-                    + " | " + result.millis() + " ms");
+                    + " | nonce=" + block.getNonce());
         }
 
         System.out.println("Users: " + users.size() + ", generated tx: " + all.size());

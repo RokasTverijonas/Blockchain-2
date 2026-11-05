@@ -96,4 +96,7 @@ public class Blockchain {
     public int size() {
         return chain.size();
     }
+    public int getDifficulty() {
+        return difficulty;
+    }
 }
