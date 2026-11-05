@@ -14,6 +14,9 @@ public class Block {
     private long nonce;
     private final int difficulty;
 
+    private final String headerStart;
+    private final String headerEnd;
+
     private final List<Transaction> transactions;
 
     public Block(String prevHash, long timestamp, int version, long nonce, int difficulty, List<Transaction> transactions) {
@@ -24,6 +27,8 @@ public class Block {
         this.txRoot = computeTxRoot(this.transactions);
         this.nonce = nonce;
         this.difficulty = difficulty;
+        this.headerStart = prevHash + "|" + timestamp + "|" + version + "|" + txRoot + "|";
+        this.headerEnd = "|" + difficulty;
     }
 
     public static String computeTxRoot(List<Transaction> txs) {
@@ -37,8 +42,7 @@ public class Block {
     }
 
     public String calculateHash() {
-        String header = prevHash + "|" + timestamp + "|" + version + "|" + txRoot + "|" + nonce + "|" + difficulty;
-        return HashFunction.hash(header);
+        return HashFunction.hash(headerStart + nonce + headerEnd);
     }
 
     public String getPrevHash() {
