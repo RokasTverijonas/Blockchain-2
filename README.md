@@ -45,12 +45,12 @@
  
 ## Results
  
-    Candidate 1 | tx=3 | attempts= 5000 | 7 ms
-    Candidate 2 | tx=3 | attempts= 5000 | 6 ms
-    Candidate 3 | tx=3 | attempts= 1269 | 1 ms | Winner
-    Candidate 4 | tx=3 | attempts= 0 | 0 ms
-    Candidate 5 | tx=3 | attempts= 0 | 0 ms
-    Block 98 | tx=3 | prev=000315c979b2cc941c9e35a7cbbcc47823fd26efb7d2dd0d11e6ca27a76be028 | root=c1020331098de2afa178cc79ec9cee4510bbae09070a9a7b3996a9ae18b41638 | hash=000edb9e700f0b99034cae289c01172310eaf0d43a23352a1a529e3f43be16e2 | diff=3 | nonce=1268
+    Candidate 1 | tx=100 | attempts= 5000 | 5 ms
+    Candidate 2 | tx=100 | attempts= 5000 | 5 ms
+    Candidate 3 | tx=100 | attempts= 3588 | 3 ms | Winner
+    Candidate 4 | tx=100 | attempts= 0 | 0 ms
+    Candidate 5 | tx=100 | attempts= 0 | 0 ms
+    Block 73 | tx=100 | prev=000b51223605842d23290caa201cb0550e7cb52337806ebd8fbaf9dccfca420f | root=0054e07e70730d146f014a603cfb19b6d8d2e7d8dee026eccff3383e7c6db469 | hash=000aed22fde19d65e9e81fccc21cfd6fea045c7887d6352a3d1e7801bff3aa71 | diff=3 | nonce=3587
  
     Users: 1000, generated tx: 10000
     Blocks: 98, included: 9661, rejected: 0, left: 339
